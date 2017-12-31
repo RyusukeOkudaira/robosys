@@ -43,9 +43,9 @@ static ssize_t led_write(struct file* flip, const char* buf, size_t count, loff_
 		gpio_base[7] = 1 << 23;
 	}
 	else if(c == '4'){
-		gpio_base[10] = 1 << 25;
-		gpio_base[10] = 1 << 24;
-		gpio_base[10] = 1 << 23;
+		gpio_base[7] = 1 << 25;
+		gpio_base[7] = 1 << 24;
+		gpio_base[7] = 1 << 23;
 	}
 
 	printk(KERN_INFO "receive %c\n",c);
@@ -75,9 +75,9 @@ static int __init init_mod(void)
 	int retval;
 	gpio_base = ioremap_nocache(0x3f200000, 0xA0);
 
-	const u32 led = 25;
+	const u32 led = 23;
 	const u32 led2 = 24;
-	const u32 led3 = 23;
+	const u32 led3 = 25;
 
 	const u32 index = led/10;
 
