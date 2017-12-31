@@ -4,6 +4,7 @@
 #include<linux/device.h>
 #include<asm/uaccess.h>
 #include<linux/io.h>
+#include<linux/delay.h>
 
 MODULE_AUTHOR("Okudaira Ryusuke");
 MODULE_DESCRIPTION("driver for LED control");
@@ -21,10 +22,31 @@ static ssize_t led_write(struct file* flip, const char* buf, size_t count, loff_
 	if(copy_from_user(&c,buf,sizeof(char)))
 		return -EFAULT;
 
-	if(c == '0')
+	if(c == '0'){
 		gpio_base[10] = 1 << 25;
-	else if(c == '1')
+		gpio_base[10] = 1 << 24;
+		gpio_base[10] = 1 << 23;
+	}
+	else if(c == '1'){
 		gpio_base[7] = 1 << 25;
+		gpio_base[10] = 1 << 24;
+		gpio_base[10] = 1 << 23;
+	}
+	else if(c == '2'){
+		gpio_base[10] = 1 << 25;
+		gpio_base[7] = 1 << 24;
+		gpio_base[10] = 1 << 23;
+	}
+	else if(c == '3'){
+	       	gpio_base[10] = 1 << 25;
+		gpio_base[10] = 1 << 24;
+		gpio_base[7] = 1 << 23;
+	}
+	else if(c == '4'){
+		gpio_base[10] = 1 << 25;
+		gpio_base[10] = 1 << 24;
+		gpio_base[10] = 1 << 23;
+	}
 
 	printk(KERN_INFO "receive %c\n",c);
 	return 1;
@@ -54,10 +76,22 @@ static int __init init_mod(void)
 	gpio_base = ioremap_nocache(0x3f200000, 0xA0);
 
 	const u32 led = 25;
+	const u32 led2 = 24;
+	const u32 led3 = 23;
+
 	const u32 index = led/10;
+
 	const u32 shift = (led%10)*3;
+	const u32 shift2 = (led2%10)*3;
+	const u32 shift3 = (led3%10)*3;
+
 	const u32 mask = ~(0x7 << shift);
+	const u32 mask2 = ~(0x7 << shift2);
+	const u32 mask3 = ~(0x7 << shift3);
+
 	gpio_base[index] = (gpio_base[index] & mask) | (0x1 << shift);
+	gpio_base[index] = (gpio_base[index] & mask2) | (0x1 << shift2);
+	gpio_base[index] = (gpio_base[index] & mask3) | (0x1 << shift3);
 
 	retval = alloc_chrdev_region(&dev, 0, 1, "myled");
 	if(retval < 0){
