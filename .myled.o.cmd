@@ -716,6 +716,8 @@ deps_/home/pi/robosys/myled.o := \
     $(wildcard include/config/generic/iomap.h) \
     $(wildcard include/config/virt/to/bus.h) \
   include/linux/vmalloc.h \
+  include/linux/delay.h \
+  arch/arm/include/asm/delay.h \
 
 /home/pi/robosys/myled.o: $(deps_/home/pi/robosys/myled.o)
 
